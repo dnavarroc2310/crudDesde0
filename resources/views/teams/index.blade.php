@@ -7,8 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-<h1>HOLA VISTA INDEX</h1>
+<h1 style="padding-left: 35%">Equipos europeos</h1>
 
+<button type="button" class="btn btn-primary" style="margin-left: 85%;" id="create">Crear</button><br>
     <table class="table">
         <thead>
             <tr>
@@ -37,15 +38,21 @@
                 <td>{{$team->copasGanadasLocales}}</td>
                 <td>{{$team->championsGanadas}}</td>
                 <td>
-                    <a href="">Editar</a>
-                    <a href="">Eliminar</a>
+                    <a href="{{url('/teams/'. $team->id . '/edit')}}">Editar</a>
+                    <form action="{{'/teams/'. $team->id}}" method="POST">
+                        @csrf
+                        {{method_field('DELETE')}}
+                        <input type="submit" onclick="return confirm('¿Desea borrar?')" value="Borrar">
+                    </form>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-
-    <!-- Aquí puedes agregar paginación -->
-
 </body>
+<script>
+    document.getElementById('create').addEventListener('click', function(){
+        window.location.href = '/teams/create';
+    });
+</script>
 </html>

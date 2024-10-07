@@ -10,7 +10,7 @@ class TeamsController extends Controller
     public function index()
     {
         $teams = Teams::all();
-        return view('index', ['teams' => $teams]);
+        return view('teams.index', ['teams' => $teams]);
     }
 
     /**
@@ -18,7 +18,7 @@ class TeamsController extends Controller
      */
     public function create()
     {
-        return view('teams.from');
+        return view('teams.create');
     }
 
     /**
@@ -26,20 +26,15 @@ class TeamsController extends Controller
      */
     public function store(Request $request)
     {
-        // $datosEmpleados = request()->all();
-        $datosEmpleados = request()->except('_token');
-        //Agregar una imagen
-        // if(request(->hasFile('Foto')){
-        //     $datosEmpleados['Foto'] = request()->file('Foto')->store('uploads', 'public');
-        // }
-        //Insertar datos en la tabla empleados
-        Empleado::insert($datosEmpleados);
+        $datosTeams = request()->except('_token');
+        Teams::create($datosTeams);
+        return redirect('/teams')->with('mensaje', 'Equipo agregado con éxito');
     }
 
     /**
      * Display the specified resource`
      */
-    public function show(Empleado $empleado)
+    public function show(Teams $teams)
     {
         //
     }
@@ -49,20 +44,23 @@ class TeamsController extends Controller
      */
     public function edit($id)
     {
-        $empleado = Empleado::findOrFail($id);
-        return view('empleado.edit', compact('empleado'));
+        $teams = Teams::findOrFail($id);
+        return view('teams.edit', compact('teams'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        $datosEmpleados = request()->except(['_token', '_method']);
-        Empleado::where('id', '=', $id)->update($datosEmpleados);
+        // Obtén los datos excepto los campos de protección _token y _method
+        $datosTeams = request()->except(['_token', '_method']);
 
-        $empleado = Empleado::findOrFail($id);
-        return view('empleado.edit', compact('empleado'));
+        // Actualiza los datos del equipo con el ID proporcionado
+        Teams::where('id', '=', $id)->update($datosTeams);
+
+        // Redirige a la vista de los equipos, mostrando un mensaje de éxito
+        return redirect('/teams')->with('mensaje', 'Equipo actualizado con éxito');
     }
 
     /**
@@ -71,9 +69,9 @@ class TeamsController extends Controller
     public function destroy($id)
     {
         //elimina al empleado por el ID
-        Empleado::destroy($id);
+        Teams::destroy($id);
         //retornar a la vista de empleados
-        return redirect('empleado');
+        return redirect('teams');
     }
 
 }
